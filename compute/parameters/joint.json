@@ -1,0 +1,96 @@
+{
+  "dataset": "Winhausen2023 Mont Terri",
+  "channels": [
+    "q_MPa",
+    "pressure_MPa"
+  ],
+  "material_parameters": {
+    "E_parallel": 3610.4844354804927,
+    "E_normal": 1705.4612336962882,
+    "nu_parallel": 0.010001863145456952,
+    "cross_fraction": 0.8999997646922857,
+    "G_normal": 1575.9928408405829,
+    "stiffness_pressure_fraction": 0.17834921221781877,
+    "matrix_cohesion": 0.050546757068312104,
+    "matrix_friction": 0.7403404913161348,
+    "dilation_fraction": 0.3127845778601825,
+    "parallel_weight": 1.982683154595583,
+    "plane_friction": 0.08900584995899631,
+    "plane_compliance": 1.3864973685195239,
+    "initial_density": 0.04628454320599642,
+    "damage_resistance": 0.020560142329673937,
+    "damage_peak_density": 0.3232195899729611,
+    "damage_residual_fraction": 0.5601763314948738,
+    "damage_shape": 1.458933852300327,
+    "dilation_residual_fraction": 0.01979253696016179,
+    "parallel_residual_weight": 2.999907862898738,
+    "dilation_density_ratio": 0.926103599203621,
+    "matrix_contraction": 0.9720683848767958,
+    "friction_residual_fraction": 0.9975348536240884
+  },
+  "network": {
+    "raw_parameters": [
+      -4.738141471432091,
+      -5.389134471111338,
+      -3.4892140998808547,
+      -4.521473068734202,
+      1.5451298399711777,
+      1.9214949458205224,
+      -2.7072192084257387,
+      2.025442297294512,
+      -0.3499805889538524,
+      -0.8197479818080473,
+      -3.630499922202633,
+      -4.608109279748005
+    ],
+    "hidden_width": 4
+  },
+  "evolution_network": {
+    "raw_parameters": [
+      0.7188799458026551,
+      0.8403994742764311,
+      0.763463581971246,
+      0.7391875632674896,
+      0.1299721283763101,
+      1.7891403105467933,
+      -1.3544092406562858,
+      -6.098703107655644,
+      -1.647570436027352,
+      -2.055067226821974,
+      1.3665144349964258,
+      3.104284788348608,
+      -1.0803605011340147,
+      -0.4177262708168983,
+      1.988017667558476,
+      -0.41948367247318397,
+      0.22058641251074124,
+      -0.2007790545574813,
+      0.038944740810461585,
+      0.011022400413382778
+    ],
+    "hidden_width": 4,
+    "pressure_scale_MPa": 10.0
+  },
+  "fixed_parameters": {
+    "grain_bulk": 50000.0,
+    "fluid_bulk": 2200.0,
+    "porosity": 0.15,
+    "matrix_slope": 1.0,
+    "plane_normal_factor": 1.0,
+    "plane_shear_factor": 1.0,
+    "compaction_onset": 100.0,
+    "compaction_hardening": 5000.0
+  },
+  "reference_confinement_MPa": 10.0,
+  "training_specimens": [
+    "OPA07",
+    "OPA12",
+    "OPA10",
+    "OPA06",
+    "OPA11",
+    "OPA22",
+    "OPA09"
+  ],
+  "samples": 200,
+  "max_increment": 3.125e-05
+}
