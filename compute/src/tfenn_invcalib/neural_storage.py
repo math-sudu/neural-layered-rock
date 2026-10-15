@@ -13,6 +13,14 @@ import numpy as np
 from .poromechanical_coupling import PorousEnergyClosure
 
 
+class IdentityStorage:
+    """Exact analytical coordinate h(d)=d, with no trainable parameters."""
+
+    def value_derivatives(self, density):
+        d = np.asarray(density, dtype=float)
+        return d, np.ones_like(d), np.zeros_like(d)
+
+
 @dataclass(frozen=True)
 class MonotoneStorageNetwork:
     """One input, a tanh hidden layer and a positive linear output with skip.

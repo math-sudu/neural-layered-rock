@@ -2,7 +2,7 @@
 
 Read the original OSF bytes by column name, retaining acquisition order.
 The single measured radial direction is not a volumetric-strain channel.
-Specimen roles and terminal-record exclusions are in the source metadata.
+Default specimen roles and terminal-record exclusions are in the source metadata.
 """
 
 import io
@@ -78,11 +78,21 @@ def load_specimen(metadata, root=DATA_ROOT):
     )
 
 
-def load_specimens(role="train", root=DATA_ROOT):
-    """Load complete specimens from the fixed split; None selects all records."""
+def load_specimens(role="train", root=DATA_ROOT, *, training_specimens=None):
+    """Load complete records with source roles or an experiment's saved split."""
     if role not in ("train", "test", None):
         raise ValueError("role must be 'train', 'test', or None.")
     root = Path(root)
     source = json.loads((root / "source.json").read_text(encoding="utf-8"))
-    return [load_specimen(item, root) for item in source["files"]
+    items = source["files"]
+    if training_specimens is not None:
+        selected = set(training_specimens)
+        if not selected or len(selected) != len(training_specimens):
+            raise ValueError("Training specimens must be nonempty and unique.")
+        missing = selected - {item["specimen_id"] for item in items}
+        if missing:
+            raise ValueError(f"Unknown training specimens: {sorted(missing)}")
+        items = [dict(item, role="train" if item["specimen_id"] in selected else "test")
+                 for item in items]
+    return [load_specimen(item, root) for item in items
             if role is None or item["role"] == role]

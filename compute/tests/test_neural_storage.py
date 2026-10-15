@@ -9,7 +9,7 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from tfenn_invcalib.energetic_coupling import VOLUME
-from tfenn_invcalib.neural_storage import MonotoneStorageNetwork, NeuralPorousEnergy
+from tfenn_invcalib.neural_storage import IdentityStorage, MonotoneStorageNetwork, NeuralPorousEnergy
 from tfenn_invcalib.poromechanical_coupling import TIElasticity, mandel_rotation
 from tfenn_invcalib.coupled_friction_damage import CoupledFrictionDamage, FrictionDamageLaw
 
@@ -51,8 +51,27 @@ def test_storage_curvature_used_by_implicit_jacobian():
         np.testing.assert_allclose(Hpp, (right[1]-left[1])/(2*step), rtol=2e-7, atol=1e-7)
 
 
-def test_all_forces_and_reciprocity_derive_from_one_energy():
+def test_identity_storage_recovers_projected_host_closure_and_both_derivatives():
+    m = energy()
+    m.network = IdentityStorage()
+    densities = np.array([.1, .7, 4., 40.])
+    h, hp, hpp = m.network.value_derivatives(densities)
+    np.testing.assert_array_equal(h, densities)
+    np.testing.assert_array_equal(hp, np.ones_like(densities))
+    np.testing.assert_array_equal(hpp, np.zeros_like(densities))
+    for d in densities:
+        H = np.linalg.inv(m.plane_S0+d*m.plane_Sprime)
+        Hp = -H @ m.plane_Sprime @ H
+        Hpp = 2*H @ m.plane_Sprime @ H @ m.plane_Sprime @ H
+        for actual, expected in zip(m.plane_storage_derivatives(d), (H, Hp, Hpp)):
+            np.testing.assert_allclose(actual, expected, rtol=1e-12, atol=1e-12)
+
+
+@pytest.mark.parametrize("identity", [False, True])
+def test_all_forces_and_reciprocity_derive_from_one_energy(identity):
     m, D = energy(), .2
+    if identity:
+        m.network = IdentityStorage()
     eps = np.array([.003, .001, -.0005, .0003, -.0004, .0002])
     cm = np.array([.0005, -.0002, -.0001, .0001, .0002, -.0001])
     z, kappa, d, zeta = np.array([-.0001, .0007, -.0003]), .0002, .6, -.0001

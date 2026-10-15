@@ -241,7 +241,8 @@ def test_positive_resistance_gives_softening_without_damage_healing():
     assert max(loading[:61]) > loading[60]+1.
 
 
-def test_softening_fold_reaches_a_consistent_later_branch():
+@pytest.mark.parametrize("density_search_subdivisions", [1, 4])
+def test_softening_fold_reaches_a_consistent_later_branch(density_search_subdivisions):
     energy = PorousEnergyClosure(TIElasticity(15000., 4500., .25, .38, 3500.), [1., 0., 0.],
         grain_bulk=50000., fluid_bulk=2200., porosity=.15, matrix_slope=1.,
         plane_normal_factor=1., plane_shear_factor=1., compaction_onset=30., compaction_hardening=1500.)
@@ -251,7 +252,8 @@ def test_softening_fold_reaches_a_consistent_later_branch():
     initial = previous = m.consolidated_state(5., .05)
     jumped = False
     for axial in np.linspace(0., .012, 81):
-        state = m.step(initial["strain"][0]+axial, [5., 5., 0., 0., 0.], previous, pressure=0.)
+        state = m.step(initial["strain"][0]+axial, [5., 5., 0., 0., 0.], previous, pressure=0.,
+                       density_search_subdivisions=density_search_subdivisions)
         if state["d"] > 2*previous["d"]:
             jumped = True
             assert state["response"]["total_stress"][0] < previous["response"]["total_stress"][0]
